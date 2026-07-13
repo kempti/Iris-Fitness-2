@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#c026d3">
+<title>Move Weekly</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(180deg,#fff1f2 0%,#fdf4ff 45%,#f5f3ff 100%);
+    background-attachment:fixed;color:#1e293b;min-height:100vh;line-height:1.4}
+  .wrap{max-width:448px;margin:0 auto;padding:32px 20px 64px}
+  .muted{color:#64748b}
+  .small{font-size:12px}
+  .tiny{font-size:11px}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .logo{width:38px;height:38px;border-radius:14px;background:#c026d3;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+  h1{font-size:26px;font-weight:800;letter-spacing:-0.02em}
+  .sub-h{color:#64748b;font-size:13px;margin:0 0 22px 4px}
+
+  .cycle{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px}
+  .chip{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(255,255,255,.7);color:#94a3b8}
+  .chip.active{color:#fff}
+  .arrow{color:#cbd5e1;font-size:13px}
+
+  .card{background:#fff;border-radius:24px;padding:20px;box-shadow:0 1px 3px rgba(15,23,42,.06);margin-bottom:12px}
+  .hero{border-radius:28px;padding:24px}
+  .eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8}
+  .dotrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .dot{width:10px;height:10px;border-radius:999px}
+  .hero h2{font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+  .hero .focus{color:#64748b;font-size:13px}
+  .hero .meta{color:#94a3b8;font-size:12px;margin-bottom:20px}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:15px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s}
+  .btn:active{transform:scale(.98)}
+  .btn.dark{background:#1e293b}
+  .btn.ghost{background:#f1f5f9;color:#475569;padding:12px;font-size:13px}
+
+  .label-row{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:0 0 8px 4px}
+  .pick{width:100%;background:#fff;border:none;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(15,23,42,.06);margin-bottom:8px;cursor:pointer;text-align:left;transition:transform .1s}
+  .pick:active{transform:scale(.99)}
+  .badge{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+  .pick .name{font-weight:700;font-size:15px}
+  .pick .focus{font-size:12px;color:#94a3b8}
+  .done-tag{font-size:12px;font-weight:700;color:#059669;flex-shrink:0}
+
+  .rowbetween{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .bars{display:flex;gap:8px}
+  .bar{flex:1;height:10px;border-radius:999px;background:#f1f5f9}
+
+  .tips{background:rgba(255,255,255,.65)}
+  .tips ul{list-style:none}
+  .tips li{font-size:12px;color:#64748b;display:flex;gap:8px;margin-bottom:6px}
+  .tips .b{color:#e879f9;font-weight:800}
+
+  .datarow{display:flex;gap:8px;margin-top:12px}
+  .datarow .btn{flex:1}
+
+  .linkbtn{background:none;border:none;color:#94a3b8;font-size:12px;display:block;margin:12px auto 0;cursor:pointer}
+  .linkbtn:hover{color:#475569}
+
+  .back{background:none;border:none;color:#94a3b8;font-size:14px;display:flex;align-items:center;gap:2px;margin-bottom:16px;cursor:pointer}
+  .wtitle{font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:22px}
+  .section{background:#fff;border-radius:24px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .sechead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+  .sechead h3{font-size:18px;font-weight:800}
+  .sechead .note{font-size:11px;color:#94a3b8}
+  .row{width:100%;background:none;border:none;border-top:1px solid #f8fafc;display:flex;align-items:flex-start;gap:12px;padding:12px 0;text-align:left;cursor:pointer}
+  .row:first-of-type{border-top:none}
+  .box{margin-top:2px;width:24px;height:24px;border-radius:8px;background:#f1f5f9;color:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;font-size:14px}
+  .box.on{background:#10b981;color:#fff}
+  .rowtext{flex:1}
+  .rowlabel{font-weight:600;font-size:15px}
+  .rowlabel.done{text-decoration:line-through;color:#94a3b8}
+  .rowlabel .sub{color:#94a3b8;font-weight:500}
+  .cue{display:block;font-size:12px;color:#94a3b8;margin-top:2px}
+
+  .done-wrap{padding-top:40px;text-align:center}
+  .done-icon{width:80px;height:80px;border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:34px}
+  .done-wrap h2{font-size:24px;font-weight:800;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="importFile" accept="application/json,.json" style="display:none">
+<script>
+(function(){
+  "use strict";
+
+  var WORKOUTS = [
+    { id:"upper", name:"Upper Body", short:"Upper", focus:"Back, chest, shoulders & arms",
+      color:"#7c3aed", soft:"#f5f3ff", text:"#6d28d9",
+      warmup:["Arm circles — 30 sec each direction","Shoulder rolls — 30 sec","Marching or light jog on the spot — 2 min"],
+      exercises:[
+        {name:"Incline push-ups", sets:"3", reps:"8–12", cue:"Hands on a kitchen counter, desk, or wall — the higher the surface, the easier. As it gets easier, use a lower surface, then your knees on the floor, working toward a full push-up."},
+        {name:"Bent-over rows", sets:"3", reps:"10–12", cue:"Use dumbbells, a backpack, or water bottles. Squeeze your shoulder blades together."},
+        {name:"Shoulder press", sets:"3", reps:"10", cue:"Press straight up. Don't arch your lower back."},
+        {name:"Lateral raises", sets:"3", reps:"12", cue:"Light dumbbells or water bottles. Raise your arms out to the sides up to shoulder height, lower slowly. Keep a slight bend in your elbows."},
+        {name:"Bicep curls", sets:"3", reps:"12", cue:"Slow and controlled, elbows tucked in."},
+        {name:"Chair tricep dips", sets:"3", reps:"10", cue:"Hands on a sturdy chair. Keep elbows pointing back, not out."},
+        {name:"Superman hold", sets:"3", reps:"12", cue:"Lie on your stomach, lift your arms and legs a few inches off the floor, squeeze for 2 seconds, lower with control."},
+        {name:"Incline plank hold", sets:"3", reps:"15–25 sec", cue:"Forearms on a couch or sturdy chair — the higher the surface, the easier. Straight line from head to heels, don't let your hips sag. Add a few seconds each week and lower the surface over time until you're on the floor. Knees down is fine if you need it easier."}
+      ],
+      cooldown:["Chest & shoulder stretch — 30 sec each side","Overhead tricep stretch — 30 sec each arm"] },
+    { id:"lower", name:"Lower Body", short:"Lower", focus:"Legs & glutes",
+      color:"#f59e0b", soft:"#fffbeb", text:"#b45309",
+      warmup:["Leg swings — 30 sec each leg","Bodyweight squats (slow) — 1 min","Marching on the spot — 2 min"],
+      exercises:[
+        {name:"Bodyweight squats", sets:"3", reps:"12–15", cue:"Sit back like you're reaching for a chair. Knees track over your toes."},
+        {name:"Sumo squats", sets:"3", reps:"15", cue:"Stand wide with your toes pointing out. Squat down keeping your chest up, push through your heels."},
+        {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Step back and lower gently. Keep your chest up."},
+        {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control. Hold water bottles to make it harder."},
+        {name:"Glute bridges", sets:"3", reps:"15", cue:"Squeeze your glutes hard at the top."},
+        {name:"Calf raises", sets:"3", reps:"20", cue:"Rise onto your toes, lower slowly."},
+        {name:"Wall sit", sets:"3", reps:"30–45 sec", cue:"Back flat on the wall, thighs parallel to the floor."},
+        {name:"Side-lying leg raises", sets:"3", reps:"12 each side", cue:"Lift with control, don't rock your body."}
+      ],
+      cooldown:["Standing quad stretch — 30 sec each leg","Seated hamstring stretch — 30 sec each leg"] },
+    { id:"full", name:"Full Body", short:"Full", focus:"All-round strength",
+      color:"#059669", soft:"#ecfdf5", text:"#047857",
+      warmup:["Arm circles + leg swings — 1 min","Jumping jacks or step-touch — 2 min","Slow squats — 1 min"],
+      exercises:[
+        {name:"Squat to overhead press", sets:"3", reps:"12", cue:"Squat down, then press up as you stand tall."},
+        {name:"Incline push-ups", sets:"3", reps:"8–10", cue:"Hands on a counter, desk, or wall — the higher the surface, the easier. Lower the surface over time, then move to your knees, working toward a full push-up."},
+        {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Chest up, lower gently."},
+        {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control."},
+        {name:"Bent-over rows", sets:"3", reps:"12", cue:"Squeeze shoulder blades together."},
+        {name:"Glute bridges", sets:"3", reps:"15", cue:"Squeeze at the top."},
+        {name:"Dead bug", sets:"3", reps:"10 each side", cue:"Lie on your back, arms pointing up, knees bent up. Slowly lower one arm and the opposite leg, then switch. Keep your lower back pressed to the floor."},
+        {name:"Incline plank hold", sets:"3", reps:"15–25 sec", cue:"Forearms on a couch or sturdy chair. Straight line from head to heels. Add a few seconds each week and lower the surface over time until you're on the floor."},
+        {name:"Easy cardio finisher (optional)", sets:"1", reps:"5 min", cue:"March, step-ups, or dance — whatever feels good."}
+      ],
+      cooldown:["Full-body stretch — reach up tall, then fold forward — 1 min","Deep breaths — 1 min"] }
+  ];
+
+  var TIPS = [
+    "Rest 45–60 seconds between sets.",
+    "Move slowly with good form — that beats rushing every time.",
+    "When it starts feeling easy, add a rep or a little weight.",
+    "Fuel up: eat enough and get some protein. Muscle is built with food, not by skipping meals.",
+    "Take rest days — your muscles actually grow when you recover."
+  ];
+
+  var KEY = "moveweekly_progress_v1";
+
+  function getWeekKey(){
+    var d = new Date();
+    var jan1 = new Date(d.getFullYear(), 0, 1);
+    var week = Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7);
+    return d.getFullYear() + "-W" + week;
+  }
+
+  function defaultProgress(){
+    return { currentIndex:0, totalSessions:0, weekKey:getWeekKey(), doneThisWeek:[] };
+  }
+
+  function validIds(arr){
+    if(!Array.isArray(arr)) return [];
+    return arr.filter(function(x){ return WORKOUTS.some(function(w){ return w.id === x; }); });
+  }
+
+  function loadProgress(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var p = JSON.parse(raw);
+        var merged = {
+          currentIndex: Number(p.currentIndex) || 0,
+          totalSessions: Number(p.totalSessions) || 0,
+          weekKey: p.weekKey || getWeekKey(),
+          doneThisWeek: validIds(p.doneThisWeek)
+        };
+        if(merged.currentIndex < 0 || merged.currentIndex >= WORKOUTS.length) merged.currentIndex = 0;
+        if(merged.weekKey !== getWeekKey()){ merged.weekKey = getWeekKey(); merged.doneThisWeek = []; }
+        return merged;
+      }
+    }catch(e){}
+    return defaultProgress();
+  }
+
+  function saveProgress(){
+    try{ localStorage.setItem(KEY, JSON.stringify(progress)); }catch(e){}
+  }
+
+  var progress = loadProgress();
+  var state = { screen:"home", activeId:null, checked:{} };
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function cycleHTML(cur){
+    return '<div class="cycle">' + WORKOUTS.map(function(w,i){
+      var active = w.id === cur;
+      return '<span class="chip' + (active?" active":"") + '"' + (active?' style="background:'+w.color+'"':"") + '>' + w.short + '</span>'
+        + (i < WORKOUTS.length-1 ? '<span class="arrow">→</span>' : "");
+    }).join("") + '</div>';
+  }
+
+  function dashboardHTML(){
+    var next = WORKOUTS[progress.currentIndex] || WORKOUTS[0];
+
+    var picks = WORKOUTS.map(function(w){
+      var done = progress.doneThisWeek.indexOf(w.id) !== -1;
+      return '<button class="pick" data-action="open" data-id="'+w.id+'">'
+        + '<span class="badge" style="background:'+w.soft+';color:'+w.text+'">'+w.short.charAt(0)+'</span>'
+        + '<span style="flex:1"><span class="name" style="display:block">'+w.name+'</span><span class="focus">'+w.focus+'</span></span>'
+        + (done ? '<span class="done-tag">✓ done</span>' : "")
+        + '</button>';
+    }).join("");
+
+    var bars = WORKOUTS.map(function(w){
+      var done = progress.doneThisWeek.indexOf(w.id) !== -1;
+      return '<div class="bar"' + (done?' style="background:'+w.color+'"':"") + '></div>';
+    }).join("");
+
+    var tips = TIPS.map(function(t){ return '<li><span class="b">·</span>'+esc(t)+'</li>'; }).join("");
+
+    var allTime = progress.totalSessions > 0
+      ? '<p class="tiny muted" style="margin-top:12px">'+progress.totalSessions+' workouts done all-time 💪</p>'
+      : "";
+
+    return ''
+      + '<div class="brand"><span class="logo">💪</span><h1>Move Weekly</h1></div>'
+      + '<p class="sub-h">3 sessions a week, in any order that fits your life.</p>'
+      + cycleHTML(next.id)
+      + '<div class="card hero" style="box-shadow:0 0 0 4px '+next.soft+', 0 1px 3px rgba(15,23,42,.06)">'
+        + '<div class="dotrow"><span class="dot" style="background:'+next.color+'"></span><span class="eyebrow">Next up</span></div>'
+        + '<h2>'+next.name+'</h2>'
+        + '<p class="focus">'+next.focus+'</p>'
+        + '<p class="meta">≈ 50 minutes · '+next.exercises.length+' moves</p>'
+        + '<button class="btn" style="background:'+next.color+'" data-action="open" data-id="'+next.id+'">Start workout →</button>'
+      + '</div>'
+      + '<p class="label-row">Or pick any day</p>'
+      + picks
+      + '<div class="card" style="margin-top:12px"><div class="rowbetween"><span style="font-weight:700;font-size:14px">🔥 This week</span><span class="tiny muted">'+progress.doneThisWeek.length+' of 3</span></div><div class="bars">'+bars+'</div>'+allTime+'</div>'
+      + '<div class="card tips"><div style="font-weight:700;font-size:14px;color:#475569;margin-bottom:8px">A few things worth knowing</div><ul>'+tips+'</ul></div>'
+      + '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">Your data</div><p class="muted small">Saved on this device automatically. Export a backup to keep it safe or move to another phone.</p><div class="datarow"><button class="btn ghost" data-action="export">Export backup</button><button class="btn ghost" data-action="import">Import backup</button></div></div>'
+      + '<button class="linkbtn" data-action="reset">↺ Reset the week</button>';
+  }
+
+  function rowHTML(key,label,sub,cue,checked){
+    return '<button class="row" data-action="toggle" data-key="'+key+'">'
+      + '<span class="box'+(checked?" on":"")+'">✓</span>'
+      + '<span class="rowtext"><span class="rowlabel'+(checked?" done":"")+'">'+esc(label)+(sub?' <span class="sub">· '+esc(sub)+'</span>':"")+'</span>'
+      + (cue ? '<span class="cue">'+esc(cue)+'</span>' : "")
+      + '</span></button>';
+  }
+
+  function sectionHTML(title,note,rows){
+    return '<div class="section"><div class="sechead"><h3>'+title+'</h3><span class="note">'+note+'</span></div>'+rows+'</div>';
+  }
+
+  function workoutHTML(w){
+    var wu = w.warmup.map(function(x,i){ return rowHTML("wu"+i,x,"","",!!state.checked["wu"+i]); }).join("");
+    var ex = w.exercises.map(function(e,i){ return rowHTML("ex"+i,e.name,e.sets+" × "+e.reps,e.cue,!!state.checked["ex"+i]); }).join("");
+    var cd = w.cooldown.map(function(x,i){ return rowHTML("cd"+i,x,"","",!!state.checked["cd"+i]); }).join("");
+    return ''
+      + '<button class="back" data-action="home">‹ Home</button>'
+      + '<div class="dotrow"><span class="dot" style="background:'+w.color+'"></span><span class="eyebrow">'+w.focus+'</span></div>'
+      + '<h1 class="wtitle">'+w.name+'</h1>'
+      + sectionHTML("Warm up","~5 min",wu)
+      + sectionHTML("Workout","rest 45–60 sec between sets",ex)
+      + sectionHTML("Cool down","~5 min",cd)
+      + '<button class="btn" style="background:'+w.color+';margin-top:4px" data-action="complete">✓ Mark workout complete</button>';
+  }
+
+  function doneHTML(w){
+    var next = WORKOUTS[progress.currentIndex] || WORKOUTS[0];
+    return '<div class="done-wrap">'
+      + '<div class="done-icon" style="background:'+w.soft+';color:'+w.text+'">🎉</div>'
+      + '<h2>Nice work!</h2>'
+      + '<p class="muted" style="margin-bottom:4px">'+w.name+' done and logged.</p>'
+      + '<p class="muted small" style="margin-bottom:32px">Whenever you\'re ready next, you\'re up for <b style="color:#475569">'+next.name+'</b>.</p>'
+      + '<button class="btn dark" data-action="home">Back to home</button>'
+      + '</div>';
+  }
+
+  function render(){
+    var app = document.getElementById("app");
+    var html;
+    if(state.screen === "workout"){
+      var wv = WORKOUTS.filter(function(x){ return x.id === state.activeId; })[0];
+      html = workoutHTML(wv);
+    } else if(state.screen === "done"){
+      var wd = WORKOUTS.filter(function(x){ return x.id === state.activeId; })[0];
+      html = doneHTML(wd);
+    } else {
+      html = dashboardHTML();
+    }
+    app.innerHTML = '<div class="wrap">' + html + '</div>';
+  }
+
+  function open(id){ state.screen="workout"; state.activeId=id; state.checked={}; render(); window.scrollTo(0,0); }
+  function home(){ state.screen="home"; state.activeId=null; state.checked={}; render(); window.scrollTo(0,0); }
+
+  function toggle(key){ var y=window.scrollY; state.checked[key]=!state.checked[key]; render(); window.scrollTo(0,y); }
+
+  function complete(){
+    var idx = -1;
+    for(var i=0;i<WORKOUTS.length;i++){ if(WORKOUTS[i].id===state.activeId){ idx=i; break; } }
+    var nextIndex = (idx+1) % WORKOUTS.length;
+    if(progress.doneThisWeek.indexOf(state.activeId) === -1) progress.doneThisWeek.push(state.activeId);
+    progress.currentIndex = nextIndex;
+    progress.totalSessions = (progress.totalSessions||0) + 1;
+    progress.weekKey = getWeekKey();
+    saveProgress();
+    state.screen = "done";
+    render(); window.scrollTo(0,0);
+  }
+
+  function resetWeek(){
+    if(!window.confirm("Reset your week and all-time progress? This can't be undone.")) return;
+    progress = defaultProgress();
+    saveProgress();
+    state.checked = {};
+    render();
+  }
+
+  function exportData(){
+    try{
+      var data = JSON.stringify(progress, null, 2);
+      var blob = new Blob([data], { type:"application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      var stamp = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = "move-weekly-backup-" + stamp + ".json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    }catch(e){ window.alert("Couldn't export right now. Try again."); }
+  }
+
+  function importData(file){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        var data = JSON.parse(ev.target.result);
+        if(!data || typeof data !== "object" || !("currentIndex" in data)) throw new Error("bad");
+        var sameWeek = data.weekKey === getWeekKey();
+        progress = {
+          currentIndex: Number(data.currentIndex) || 0,
+          totalSessions: Number(data.totalSessions) || 0,
+          weekKey: getWeekKey(),
+          doneThisWeek: sameWeek ? validIds(data.doneThisWeek) : []
+        };
+        if(progress.currentIndex < 0 || progress.currentIndex >= WORKOUTS.length) progress.currentIndex = 0;
+        saveProgress();
+        state.screen = "home"; state.activeId = null; state.checked = {};
+        render();
+        window.alert("Backup imported — you're all set.");
+      }catch(err){
+        window.alert("That file didn't look like a backup from this app. Export one first, then import that file.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  document.getElementById("app").addEventListener("click", function(e){
+    var el = e.target.closest ? e.target.closest("[data-action]") : null;
+    if(!el){
+      var n = e.target;
+      while(n && n !== this && !n.getAttribute("data-action")) n = n.parentNode;
+      el = (n && n.getAttribute && n.getAttribute("data-action")) ? n : null;
+    }
+    if(!el) return;
+    var a = el.getAttribute("data-action");
+    if(a === "open") open(el.getAttribute("data-id"));
+    else if(a === "home") home();
+    else if(a === "complete") complete();
+    else if(a === "toggle") toggle(el.getAttribute("data-key"));
+    else if(a === "reset") resetWeek();
+    else if(a === "export") exportData();
+    else if(a === "import") document.getElementById("importFile").click();
+  });
+
+  document.getElementById("importFile").addEventListener("change", function(e){
+    if(e.target.files && e.target.files[0]) importData(e.target.files[0]);
+    e.target.value = "";
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
