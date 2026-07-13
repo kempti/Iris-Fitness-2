@@ -95,12 +95,14 @@
       color:"#7c3aed", soft:"#f5f3ff", text:"#6d28d9",
       warmup:["Arm circles — 30 sec each direction","Shoulder rolls — 30 sec","Marching or light jog on the spot — 2 min"],
       exercises:[
-        {name:"Push-ups", sets:"3", reps:"8–12", cue:"Drop to your knees if you need to. Keep your body in a straight line."},
+        {name:"Incline push-ups", sets:"3", reps:"8–12", cue:"Hands on a kitchen counter, desk, or wall — the higher the surface, the easier. As it gets easier, use a lower surface, then your knees on the floor, working toward a full push-up."},
         {name:"Bent-over rows", sets:"3", reps:"10–12", cue:"Use dumbbells, a backpack, or water bottles. Squeeze your shoulder blades together."},
         {name:"Shoulder press", sets:"3", reps:"10", cue:"Press straight up. Don't arch your lower back."},
+        {name:"Lateral raises", sets:"3", reps:"12", cue:"Light dumbbells or water bottles. Raise your arms out to the sides up to shoulder height, lower slowly. Keep a slight bend in your elbows."},
         {name:"Bicep curls", sets:"3", reps:"12", cue:"Slow and controlled, elbows tucked in."},
         {name:"Chair tricep dips", sets:"3", reps:"10", cue:"Hands on a sturdy chair. Keep elbows pointing back, not out."},
-        {name:"Plank", sets:"3", reps:"20–30 sec", cue:"Straight line from head to heels. Don't let your hips sag."}
+        {name:"Superman hold", sets:"3", reps:"12", cue:"Lie on your stomach, lift your arms and legs a few inches off the floor, squeeze for 2 seconds, lower with control."},
+        {name:"Incline plank hold", sets:"3", reps:"15–25 sec", cue:"Forearms on a couch or sturdy chair — the higher the surface, the easier. Straight line from head to heels, don't let your hips sag. Add a few seconds each week and lower the surface over time until you're on the floor. Knees down is fine if you need it easier."}
       ],
       cooldown:["Chest & shoulder stretch — 30 sec each side","Overhead tricep stretch — 30 sec each arm"] },
     { id:"lower", name:"Lower Body", short:"Lower", focus:"Legs & glutes",
@@ -108,7 +110,9 @@
       warmup:["Leg swings — 30 sec each leg","Bodyweight squats (slow) — 1 min","Marching on the spot — 2 min"],
       exercises:[
         {name:"Bodyweight squats", sets:"3", reps:"12–15", cue:"Sit back like you're reaching for a chair. Knees track over your toes."},
+        {name:"Sumo squats", sets:"3", reps:"15", cue:"Stand wide with your toes pointing out. Squat down keeping your chest up, push through your heels."},
         {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Step back and lower gently. Keep your chest up."},
+        {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control. Hold water bottles to make it harder."},
         {name:"Glute bridges", sets:"3", reps:"15", cue:"Squeeze your glutes hard at the top."},
         {name:"Calf raises", sets:"3", reps:"20", cue:"Rise onto your toes, lower slowly."},
         {name:"Wall sit", sets:"3", reps:"30–45 sec", cue:"Back flat on the wall, thighs parallel to the floor."},
@@ -120,11 +124,13 @@
       warmup:["Arm circles + leg swings — 1 min","Jumping jacks or step-touch — 2 min","Slow squats — 1 min"],
       exercises:[
         {name:"Squat to overhead press", sets:"3", reps:"12", cue:"Squat down, then press up as you stand tall."},
-        {name:"Push-ups", sets:"3", reps:"8–10", cue:"Knees down is fine. Body in a straight line."},
+        {name:"Incline push-ups", sets:"3", reps:"8–10", cue:"Hands on a counter, desk, or wall — the higher the surface, the easier. Lower the surface over time, then move to your knees, working toward a full push-up."},
         {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Chest up, lower gently."},
+        {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control."},
         {name:"Bent-over rows", sets:"3", reps:"12", cue:"Squeeze shoulder blades together."},
         {name:"Glute bridges", sets:"3", reps:"15", cue:"Squeeze at the top."},
-        {name:"Plank", sets:"3", reps:"30 sec", cue:"Strong straight line, hips level."},
+        {name:"Dead bug", sets:"3", reps:"10 each side", cue:"Lie on your back, arms pointing up, knees bent up. Slowly lower one arm and the opposite leg, then switch. Keep your lower back pressed to the floor."},
+        {name:"Incline plank hold", sets:"3", reps:"15–25 sec", cue:"Forearms on a couch or sturdy chair. Straight line from head to heels. Add a few seconds each week and lower the surface over time until you're on the floor."},
         {name:"Easy cardio finisher (optional)", sets:"1", reps:"5 min", cue:"March, step-ups, or dance — whatever feels good."}
       ],
       cooldown:["Full-body stretch — reach up tall, then fold forward — 1 min","Deep breaths — 1 min"] }
@@ -223,7 +229,7 @@
         + '<div class="dotrow"><span class="dot" style="background:'+next.color+'"></span><span class="eyebrow">Next up</span></div>'
         + '<h2>'+next.name+'</h2>'
         + '<p class="focus">'+next.focus+'</p>'
-        + '<p class="meta">≈ 45 minutes · '+next.exercises.length+' moves</p>'
+        + '<p class="meta">≈ 50 minutes · '+next.exercises.length+' moves</p>'
         + '<button class="btn" style="background:'+next.color+'" data-action="open" data-id="'+next.id+'">Start workout →</button>'
       + '</div>'
       + '<p class="label-row">Or pick any day</p>'
