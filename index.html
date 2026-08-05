@@ -81,6 +81,11 @@
   .done-wrap{padding-top:40px;text-align:center}
   .done-icon{width:80px;height:80px;border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:34px}
   .done-wrap h2{font-size:24px;font-weight:800;margin-bottom:8px}
+  .exlist .exitem{border-top:1px solid #f1f5f9;padding-top:14px;margin-top:14px}
+  .exlist .exitem:first-child{border-top:none;padding-top:2px;margin-top:2px}
+  .exsvg{background:#f8fafc;border-radius:14px;padding:8px 4px;margin-bottom:10px}
+  .exsvg svg{display:block;margin:0 auto}
+  .exrow{border-top:none !important;padding:0 !important}
 </style>
 </head>
 <body>
@@ -95,7 +100,7 @@
       color:"#7c3aed", soft:"#f5f3ff", text:"#6d28d9",
       warmup:["Arm circles — 30 sec each direction","Shoulder rolls — 30 sec","Marching or light jog on the spot — 2 min"],
       exercises:[
-        {name:"Incline push-ups", sets:"3", reps:"8–12", cue:"Hands on a kitchen counter, desk, or wall — the higher the surface, the easier. As it gets easier, use a lower surface, then your knees on the floor, working toward a full push-up."},
+        {name:"Bench press", sets:"3", reps:"8–12", cue:"Lie flat on a bench with the weight at chest level. Press straight up until your arms are extended, then lower slowly. Start with a light barbell or dumbbells you can control for every rep — add weight only once it feels easy."},
         {name:"Bent-over rows", sets:"3", reps:"10–12", cue:"Use dumbbells, a backpack, or water bottles. Squeeze your shoulder blades together."},
         {name:"Shoulder press", sets:"3", reps:"10", cue:"Press straight up. Don't arch your lower back."},
         {name:"Lateral raises", sets:"3", reps:"12", cue:"Light dumbbells or water bottles. Raise your arms out to the sides up to shoulder height, lower slowly. Keep a slight bend in your elbows."},
@@ -110,13 +115,13 @@
       warmup:["Leg swings — 30 sec each leg","Bodyweight squats (slow) — 1 min","Marching on the spot — 2 min"],
       exercises:[
         {name:"Bodyweight squats", sets:"3", reps:"12–15", cue:"Sit back like you're reaching for a chair. Knees track over your toes."},
-        {name:"Sumo squats", sets:"3", reps:"15", cue:"Stand wide with your toes pointing out. Squat down keeping your chest up, push through your heels."},
+        {name:"Cossack squats", sets:"3", reps:"8 each side", cue:"Stand wide. Shift your weight over one bent leg, keeping the other leg straight, then push back to the middle and switch sides. Hold a chair or wall for balance if you need it, and go only as low as feels comfortable."},
         {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Step back and lower gently. Keep your chest up."},
-        {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control. Hold water bottles to make it harder."},
+        {name:"Reformer hamstring curl", sets:"3", reps:"12", cue:"Lie on your back with your feet in the straps. Bend your knees to draw the carriage in, then straighten with control. Start with moderate spring tension."},
         {name:"Glute bridges", sets:"3", reps:"15", cue:"Squeeze your glutes hard at the top."},
-        {name:"Calf raises", sets:"3", reps:"20", cue:"Rise onto your toes, lower slowly."},
-        {name:"Wall sit", sets:"3", reps:"30–45 sec", cue:"Back flat on the wall, thighs parallel to the floor."},
-        {name:"Side-lying leg raises", sets:"3", reps:"12 each side", cue:"Lift with control, don't rock your body."}
+        {name:"Feet-in-straps abduction", sets:"3", reps:"12", cue:"Lie on your back on the carriage, feet in the straps and legs pointing up. Open your legs out wide against the springs, then draw them back together with control."},
+        {name:"Seated leg extensions", sets:"3", reps:"12–15", cue:"Sit tall on the edge of a chair. Straighten one leg until it's level with the floor, squeeze your thigh at the top, lower slowly. Add resistance with ankle weights or a resistance band looped around your ankle and anchored behind you."},
+        {name:"Calf raises", sets:"3", reps:"20", cue:"Rise onto your toes, lower slowly."}
       ],
       cooldown:["Standing quad stretch — 30 sec each leg","Seated hamstring stretch — 30 sec each leg"] },
     { id:"full", name:"Full Body", short:"Full", focus:"All-round strength",
@@ -124,7 +129,7 @@
       warmup:["Arm circles + leg swings — 1 min","Jumping jacks or step-touch — 2 min","Slow squats — 1 min"],
       exercises:[
         {name:"Squat to overhead press", sets:"3", reps:"12", cue:"Squat down, then press up as you stand tall."},
-        {name:"Incline push-ups", sets:"3", reps:"8–10", cue:"Hands on a counter, desk, or wall — the higher the surface, the easier. Lower the surface over time, then move to your knees, working toward a full push-up."},
+        {name:"Bench press", sets:"3", reps:"8–10", cue:"Lie flat on a bench and press the weight from your chest up to straight arms, lowering with control. Keep it light enough to keep good form on every rep."},
         {name:"Reverse lunges", sets:"3", reps:"10 each leg", cue:"Chest up, lower gently."},
         {name:"Step-ups", sets:"3", reps:"10 each leg", cue:"Step up onto a sturdy step or low chair, drive through your heel, step down with control."},
         {name:"Bent-over rows", sets:"3", reps:"12", cue:"Squeeze shoulder blades together."},
@@ -188,6 +193,61 @@
   var progress = loadProgress();
   var state = { screen:"home", activeId:null, checked:{} };
 
+  // ---- Exercise diagram engine ----
+  function personSVG(bones, head, color, dots){
+    var s='<g stroke="'+color+'" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">';
+    for(var i=0;i<bones.length;i++){var b=bones[i];s+='<line x1="'+b[0]+'" y1="'+b[1]+'" x2="'+b[2]+'" y2="'+b[3]+'"/>';}
+    s+='</g><circle cx="'+head[0]+'" cy="'+head[1]+'" r="'+head[2]+'" fill="'+color+'"/>';
+    if(dots){for(var j=0;j<dots.length;j++){s+='<circle cx="'+dots[j][0]+'" cy="'+dots[j][1]+'" r="3" fill="'+color+'"/>';}}
+    return s;
+  }
+  function buildDiagram(m){
+    var eq=m.eq||"";
+    var g1='<g>'+eq+personSVG(m.a,m.ah,"#c7ccd6",m.da)+'</g>';
+    var g2='<g transform="translate(132,0)">'+eq+personSVG(m.b,m.bh,"#334155",m.db)+'</g>';
+    var gr='<line x1="14" y1="134" x2="106" y2="134" stroke="#e9edf3" stroke-width="3" stroke-linecap="round"/><line x1="146" y1="134" x2="238" y2="134" stroke="#e9edf3" stroke-width="3" stroke-linecap="round"/>';
+    var ar='<g stroke="#cbd5e1" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="112" y1="82" x2="138" y2="82"/><polyline points="131,76 139,82 131,88"/></g>';
+    var lab='<text x="60" y="150" font-size="8.5" fill="#94a3b8" text-anchor="middle">'+esc(m.la||"start")+'</text><text x="192" y="150" font-size="8.5" fill="#94a3b8" text-anchor="middle">'+esc(m.lb||"end")+'</text>';
+    return '<svg viewBox="0 0 252 156" width="100%" height="150" preserveAspectRatio="xMidYMid meet">'+gr+g1+g2+ar+lab+'</svg>';
+  }
+  function buildHold(m){
+    var eq=m.eq||"";
+    var fig='<g transform="translate(60,0)">'+eq+personSVG(m.a,m.ah,"#334155",m.da)+'</g>';
+    var gr='<line x1="70" y1="134" x2="196" y2="134" stroke="#e9edf3" stroke-width="3" stroke-linecap="round"/>';
+    var ck='<g transform="translate(198,30)"><circle r="9" fill="none" stroke="#cbd5e1" stroke-width="2.6"/><line x1="0" y1="0" x2="0" y2="-5" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round"/><line x1="0" y1="0" x2="4" y2="2" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round"/></g>';
+    var lab='<text x="126" y="150" font-size="8.5" fill="#94a3b8" text-anchor="middle">'+esc(m.la||"hold")+'</text>';
+    return '<svg viewBox="0 0 252 156" width="100%" height="150" preserveAspectRatio="xMidYMid meet">'+gr+fig+ck+lab+'</svg>';
+  }
+  var MOVES = {
+    "Bench press":{la:"at chest",lb:"press up",eq:'<rect x="20" y="112" width="58" height="8" rx="2" fill="#e9edf3"/><rect x="25" y="120" width="4.5" height="12" fill="#e9edf3"/><rect x="69" y="120" width="4.5" height="12" fill="#e9edf3"/>',a:[[40,110,72,110],[72,110,86,120],[86,120,86,131],[80,131,95,131],[40,110,30,99],[30,99,41,96],[30,96,52,96]],ah:[28,105,7],da:[[30,96],[52,96],[41,96]],b:[[40,110,72,110],[72,110,86,120],[86,120,86,131],[80,131,95,131],[40,110,41,92],[41,92,41,78],[30,78,52,78]],bh:[28,105,7],db:[[30,78],[52,78],[41,78]]},
+    "Bodyweight squats":{la:"stand",lb:"squat",a:[[60,42,60,84],[60,84,60,108],[60,108,60,132],[54,132,69,132],[60,48,63,66],[63,66,63,84]],ah:[60,31,8],da:[[63,84]],b:[[74,100,66,66],[74,100,60,106],[60,106,58,132],[52,132,67,132],[66,66,78,72],[78,72,90,74]],bh:[64,54,8],db:[[90,74]]},
+    "Cossack squats":{la:"wide",lb:"shift side",a:[[60,50,60,86],[48,50,72,50],[60,86,38,131],[32,131,47,131],[60,86,82,131],[76,131,91,131],[48,50,60,74],[72,50,60,74]],ah:[60,38,8],da:[[60,74]],b:[[62,58,62,96],[54,58,70,58],[62,96,80,112],[80,112,80,131],[74,131,89,131],[62,96,30,126],[24,126,39,126],[54,58,62,74],[70,58,62,74]],bh:[62,46,8],db:[[62,74]]},
+    "Reverse lunges":{la:"stand",lb:"step back",a:[[60,48,60,84],[60,84,60,108],[60,108,60,132],[54,132,69,132],[60,50,62,68],[62,68,62,86]],ah:[60,31,8],da:[[62,86]],b:[[60,66,60,92],[60,92,58,112],[58,112,58,132],[52,132,67,132],[60,92,78,118],[78,118,92,130],[86,129,101,129],[60,68,60,88]],bh:[60,54,8],db:[[60,88]]},
+    "Reformer hamstring curl":{la:"legs out",lb:"bend knees",eq:'<line x1="18" y1="120" x2="104" y2="120" stroke="#e9edf3" stroke-width="3"/><line x1="18" y1="128" x2="104" y2="128" stroke="#e9edf3" stroke-width="3"/><rect x="26" y="106" width="46" height="13" rx="2" fill="#f0f3f8"/><line x1="98" y1="120" x2="98" y2="86" stroke="#e9edf3" stroke-width="3"/><circle cx="98" cy="84" r="3" fill="#dde3ec"/><line x1="98" y1="86" x2="90" y2="106" stroke="#dde3ec" stroke-width="2"/>',a:[[36,112,66,112],[66,112,86,110],[86,110,98,107]],ah:[30,110,7],b:[[36,112,66,112],[66,112,84,100],[84,100,74,116]],bh:[30,110,7]},
+    "Glute bridges":{la:"hips down",lb:"lift hips",a:[[36,126,70,126],[70,126,90,116],[90,116,96,132],[90,132,105,132]],ah:[28,124,7],b:[[36,126,70,104],[70,104,92,104],[92,104,96,132],[90,132,105,132]],bh:[28,124,7]},
+    "Bent-over rows":{la:"arms hang",lb:"row up",a:[[46,82,66,92],[66,92,68,112],[68,112,68,132],[62,132,77,132],[46,82,49,98],[49,98,51,111]],ah:[38,78,8],da:[[51,111]],b:[[46,82,66,92],[66,92,68,112],[68,112,68,132],[62,132,77,132],[46,82,58,74],[58,74,53,93]],bh:[38,78,8],db:[[53,93]]},
+    "Shoulder press":{la:"at shoulders",lb:"press up",a:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,42,64],[42,64,50,54],[72,50,78,64],[78,64,70,54]],ah:[60,38,8],da:[[50,54],[70,54]],b:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,49,32],[49,32,51,22],[72,50,71,32],[71,32,69,22]],bh:[60,38,8],db:[[51,22],[69,22]]},
+    "Lateral raises":{la:"arms down",lb:"raise out",a:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,46,86],[72,50,74,86]],ah:[60,38,8],da:[[46,86],[74,86]],b:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,26,50],[72,50,94,50]],bh:[60,38,8],db:[[26,50],[94,50]]},
+    "Bicep curls":{la:"arms down",lb:"curl up",a:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,47,72],[47,72,47,88],[72,50,73,72],[73,72,73,88]],ah:[60,38,8],da:[[47,88],[73,88]],b:[[60,50,60,88],[48,50,72,50],[60,88,52,132],[46,132,61,132],[60,88,68,132],[62,132,77,132],[48,50,47,72],[47,72,44,54],[72,50,73,72],[73,72,76,54]],bh:[60,38,8],db:[[44,54],[76,54]]},
+    "Chair tricep dips":{la:"arms straight",lb:"lower",eq:'<rect x="68" y="98" width="30" height="34" rx="3" fill="#e9edf3"/>',a:[[62,94,56,108],[56,108,42,114],[42,114,28,120],[22,120,37,120],[62,94,76,98]],ah:[60,84,7],da:[[76,98]],b:[[62,104,56,112],[56,112,42,116],[42,116,28,122],[22,122,37,122],[62,104,80,100],[80,100,76,98]],bh:[60,94,7],db:[[76,98]]},
+    "Seated leg extensions":{la:"knee bent",lb:"straighten",eq:'<rect x="38" y="104" width="42" height="5" rx="1" fill="#e9edf3"/><rect x="38" y="80" width="5" height="27" rx="1" fill="#e9edf3"/><line x1="42" y1="109" x2="42" y2="132" stroke="#e9edf3" stroke-width="4" stroke-linecap="round"/><line x1="76" y1="109" x2="76" y2="132" stroke="#e9edf3" stroke-width="4" stroke-linecap="round"/>',a:[[58,80,58,104],[58,104,80,104],[80,104,82,128],[76,128,91,128],[58,84,72,102]],ah:[58,66,8],da:[[72,102]],b:[[58,80,58,104],[58,104,80,104],[80,104,104,101],[58,84,72,102]],bh:[58,66,8],db:[[104,101]]},
+    "Calf raises":{la:"heels down",lb:"rise up",a:[[60,50,60,88],[60,88,52,132],[52,132,60,132],[60,88,68,132],[68,132,76,132],[48,50,72,50],[48,50,47,84],[72,50,73,84]],ah:[60,38,8],da:[[47,76],[73,76]],b:[[60,42,60,80],[60,80,52,120],[52,120,58,132],[60,80,68,120],[68,120,74,132],[48,42,72,42],[48,42,47,76],[72,42,73,76]],bh:[60,30,8]},
+    "Squat to overhead press":{la:"squat",lb:"press up",a:[[60,62,60,92],[48,52,72,52],[60,92,52,108],[52,108,50,131],[44,131,59,131],[60,92,68,108],[68,108,70,131],[64,131,79,131],[48,52,44,66],[44,66,50,56],[72,52,76,66],[76,66,70,56]],ah:[60,50,8],da:[[50,56],[70,56]],b:[[60,52,60,90],[48,52,72,52],[60,90,52,131],[46,131,61,131],[60,90,68,131],[62,131,77,131],[48,52,49,34],[49,34,51,24],[72,52,71,34],[71,34,69,24]],bh:[60,40,8],db:[[51,24],[69,24]]},
+    "Step-ups":{la:"foot up",lb:"stand up",eq:'<rect x="66" y="108" width="42" height="26" rx="3" fill="#e9edf3"/>',a:[[50,60,50,92],[50,92,48,132],[42,132,57,132],[50,92,66,100],[66,100,76,108],[50,62,50,84]],ah:[50,45,8],da:[[50,84]],b:[[74,44,74,78],[74,78,68,108],[74,78,80,108],[74,46,74,70]],bh:[74,32,8],db:[[74,70]]},
+    "Dead bug":{la:"knees and arms up",lb:"extend",a:[[32,118,64,118],[40,118,40,96],[64,118,74,100],[74,100,88,100]],ah:[24,116,7],da:[[20,110]],b:[[32,118,64,118],[40,118,20,110],[64,118,94,122],[88,122,103,122]],bh:[24,116,7]},
+    "Feet-in-straps abduction":{la:"together",lb:"open wide",eq:'<line x1="18" y1="122" x2="104" y2="122" stroke="#e9edf3" stroke-width="3"/><line x1="18" y1="129" x2="104" y2="129" stroke="#e9edf3" stroke-width="3"/><rect x="30" y="108" width="42" height="13" rx="2" fill="#f0f3f8"/>',a:[[32,114,64,114],[64,114,72,84]],ah:[26,112,7],da:[[72,84]],b:[[32,114,64,114],[64,114,52,86],[64,114,86,86]],bh:[26,112,7],db:[[52,86],[86,86]]},
+    "Easy cardio finisher (optional)":{la:"knee up",lb:"switch",a:[[60,56,60,90],[60,90,66,132],[60,132,75,132],[60,90,48,104],[48,104,52,116],[60,58,70,74],[60,58,50,72]],ah:[60,42,8],da:[[52,116],[70,74],[50,72]],b:[[60,56,60,90],[60,90,52,132],[46,132,61,132],[60,90,72,104],[72,104,76,116],[60,58,50,74],[60,58,70,72]],bh:[60,42,8],db:[[76,116],[50,74],[70,72]]}
+  };
+  var HOLDS = {
+    "Incline plank hold":{la:"hold ~15-25 sec",eq:'<rect x="82" y="104" width="26" height="30" rx="3" fill="#e9edf3"/>',a:[[78,101,54,116],[54,116,30,130],[24,130,39,130],[84,104,78,101],[84,104,98,104]],ah:[84,93,7]}
+  };
+
+  function exDiagram(name){
+    if(HOLDS[name]) return buildHold(HOLDS[name]);
+    if(MOVES[name]) return buildDiagram(MOVES[name]);
+    return "";
+  }
+
   function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
   function cycleHTML(cur){
@@ -248,20 +308,32 @@
       + '</span></button>';
   }
 
+  function exerciseItemHTML(key, e, checked){
+    var svg = exDiagram(e.name);
+    return '<div class="exitem">'
+      + (svg ? '<div class="exsvg">'+svg+'</div>' : "")
+      + '<button class="row exrow" data-action="toggle" data-key="'+key+'">'
+      + '<span class="box'+(checked?" on":"")+'">✓</span>'
+      + '<span class="rowtext"><span class="rowlabel'+(checked?" done":"")+'">'+esc(e.name)+' <span class="sub">· '+esc(e.sets+" × "+e.reps)+'</span></span>'
+      + '<span class="cue">'+esc(e.cue)+'</span></span>'
+      + '</button>'
+      + '</div>';
+  }
+
   function sectionHTML(title,note,rows){
     return '<div class="section"><div class="sechead"><h3>'+title+'</h3><span class="note">'+note+'</span></div>'+rows+'</div>';
   }
 
   function workoutHTML(w){
     var wu = w.warmup.map(function(x,i){ return rowHTML("wu"+i,x,"","",!!state.checked["wu"+i]); }).join("");
-    var ex = w.exercises.map(function(e,i){ return rowHTML("ex"+i,e.name,e.sets+" × "+e.reps,e.cue,!!state.checked["ex"+i]); }).join("");
+    var ex = w.exercises.map(function(e,i){ return exerciseItemHTML("ex"+i, e, !!state.checked["ex"+i]); }).join("");
     var cd = w.cooldown.map(function(x,i){ return rowHTML("cd"+i,x,"","",!!state.checked["cd"+i]); }).join("");
     return ''
       + '<button class="back" data-action="home">‹ Home</button>'
       + '<div class="dotrow"><span class="dot" style="background:'+w.color+'"></span><span class="eyebrow">'+w.focus+'</span></div>'
       + '<h1 class="wtitle">'+w.name+'</h1>'
       + sectionHTML("Warm up","~5 min",wu)
-      + sectionHTML("Workout","rest 45–60 sec between sets",ex)
+      + sectionHTML("Workout","rest 45–60 sec between sets",'<div class="exlist">'+ex+'</div>')
       + sectionHTML("Cool down","~5 min",cd)
       + '<button class="btn" style="background:'+w.color+';margin-top:4px" data-action="complete">✓ Mark workout complete</button>';
   }
